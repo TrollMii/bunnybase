@@ -13,7 +13,7 @@ total_times = []
 version_count = []
 
 _start = time.time()
-for i in range(1, 100):
+for i in range(1, 5):
     start = time.time()
     save_as_bunny('test.bunny', hub)
     end = time.time()
