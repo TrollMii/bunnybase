@@ -9,6 +9,9 @@ include = [
     "imgs/adding-data-to-hub.png",
     "imgs/performance-saving-hub.png"
 ]
+exclude = [
+    "benchmarks/*"
+]
 [tool.poetry.dependencies]
 python = "^3.10"
 pyarrow = "^19.0.1"
