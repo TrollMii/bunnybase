@@ -17,7 +17,7 @@ class DataList:
         group = []
         if not property is None:
             for i in self._datalist:
-                group.append(i.has_properties({
+                group.append(i.has_properties(**{
                     property: "*"
                 }))
         elif not value is None:
