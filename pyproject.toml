@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bunnybase"
-version = "0.1.9"
+version = "0.1.10"
 description = "Datamanaging system"
 authors = ["trollmii <trollmii@outlook.de>"]
 readme = "README.md"

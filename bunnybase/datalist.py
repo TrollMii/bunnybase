@@ -17,12 +17,14 @@ class DataList:
         group = []
         if not property is None:
             for i in self._datalist:
-                group.append(i.has_properties(**{
+                if i.has_properties(**{
                     property: "*"
-                }))
+                }):
+                    group.append(i)
         elif not value is None:
             for i in self._datalist:
-                group.append(i.has_property_values(value))
+                if i.has_property_values(value):
+                    group.append(i)
         return DataList(group)
     def __repr__(self):
         return repr(self._datalist)
