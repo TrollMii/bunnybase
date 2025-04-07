@@ -31,5 +31,5 @@ hub.filter(name='*') # DataList([Data('animal', name='cat', age=15), Data('os', 
 
 
 
-[1]: imgs/adding-data-to-hub.png
-[2]: imgs/performance-saving-hub.png
+[1]: https://raw.githubusercontent.com/trollmii/bunnybase/master/imgs/adding-data-to-hub.png
+[2]: https://raw.githubusercontent.com/trollmii/bunnybase/master/imgs/performance-saving-hub.png
