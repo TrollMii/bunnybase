@@ -49,6 +49,8 @@ class Hub:
             if e.has_properties(**kwargs):
                 elements.append(e)
         return DataList(elements)
+    def all(self):
+        return self.filter()
     def to_dataframe(self) -> pd.DataFrame:
         data = self.data
         categories = list(data.keys())
@@ -69,7 +71,7 @@ class Hub:
             for i in v:
                 s.add(i)
             self.data[k] = list(s)
-        
+
     def __repr__(self):
         return "<object Hub>"
 
