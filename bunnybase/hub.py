@@ -1,5 +1,7 @@
 from . import data
-
+from .utils import hub_to_dataframe, dataframe_to_data, series_to_data, image_to_data
+import numpy as np
+import pandas as pd
 class DataList:
     def __init__(self, datalist: list[data.Data]):
         self._datalist = datalist
@@ -40,7 +42,11 @@ class Hub:
     def __init__(self):
         self.data : dict[str, list[data.Data]] = {}
     def __lshift__(self, data: data.Data|   DataList|list|tuple|set):
-        if isinstance(data, (DataList, list, tuple, set)):
+        if isinstance(data, pd.Series):
+            data = series_to_data(data, 'None')
+        if isinstance(data, pd.DataFrame):
+            data = dataframe_to_data(data)
+        elif isinstance(data, (DataList, list, tuple, set)):
             for i in data:
                 category = i.category.lower()
                 if self.data.get(category) is None:
@@ -71,6 +77,8 @@ class Hub:
             if e.has_properties(**kwargs):
                 elements.append(e)
         return DataList(elements)
+    def to_dataframe(self):
+        return hub_to_dataframe(self)
     def optimise(self):
         for k, v in self.data.items():
             s = set()

@@ -2,7 +2,22 @@ import pandas as pd
 from PIL import Image
 import numpy as np
 
-from . import Data
+from .hub import DataList
+from . import Data, Hub
+def hub_to_dataframe(hub: Hub) -> pd.DataFrame:
+    data = hub.data
+    categories = list(data.keys())
+    h = dict[str, dict[tuple[str|int], list]]()
+    for category in categories:
+        for idx, ds in enumerate(data[category]):
+            for k, v in ds.properties.items():
+                if h.get(k) == None:
+                    h[k] = {(category, idx): v}
+                else:
+                    h[k].update({(category, idx): v})
+    
+    df = pd.DataFrame(h)
+    return df
 
 def image_to_data(file, **metadata):
     image = Image.open(file)
@@ -32,7 +47,7 @@ def series_to_data(series: pd.Series, _name=None) -> Data:
             raise Exception("A data object need a category (Series name default), but the series has no name. You can also pass a name over the arguments")
     data = Data(str(name), **properties)
     return data
-def dataframe_to_data(df: pd.DataFrame) -> list[Data]:
+def dataframe_to_data(df: pd.DataFrame) -> DataList:
     """Converts a pandas dataframe into a bunny data object
 
     Args:
@@ -56,4 +71,4 @@ def dataframe_to_data(df: pd.DataFrame) -> list[Data]:
             if name == None:
                 raise Exception("A data object need a category (Series name default), but the series has no name. You can also pass a name over the arguments")
         data.append(Data(str(name), **properties))
-    return data
+    return DataList(data)
