@@ -27,5 +27,10 @@ class Data:
                     return False
             
         return True
+    def has_property_values(self, *args):
+        for k, v in self.properties:
+            if not v in args:
+                return False
+        return True
             
     
