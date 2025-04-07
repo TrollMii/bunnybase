@@ -1,52 +1,24 @@
-from . import data
-from .utils import hub_to_dataframe, dataframe_to_data, series_to_data, image_to_data
+from .data import Data
 import numpy as np
 import pandas as pd
-class DataList:
-    def __init__(self, datalist: list[data.Data]):
-        self._datalist = datalist
-        self._len = len(datalist)
-    def filter(self, *args, **kwargs):
-        elements = []
-        
-        for e in self._datalist:
-            if e.has_properties(**kwargs):
-                elements.append(e)
-            elif e.has_property_values(*args):
-                elements.append(e)
-        return DataList(elements)
-    def __repr__(self):
-        return repr(self._datalist)
-    def __getitem__(self, item: tuple[str]|str):
-        if isinstance(item, tuple):
-            return self.filter(*item)
-        elif isinstance(item, str):
-            return self.filter(*item)
-        else:
-            return self._datalist[item]
-    def __len__(self) -> int:
-        return self._len
-    def __iter__(self):
-        self.n = 0
-        return self
-    def __next__(self):
-        self.n += 1
-        if self.n == self._len:
-            raise StopIteration()
-        return self._datalist[self.n]
-    
+from .utils import dataframe_to_data, series_to_data
+from .datalist import DataList
     
     
     
 class Hub:
     def __init__(self):
-        self.data : dict[str, list[data.Data]] = {}
-    def __lshift__(self, data: data.Data|   DataList|list|tuple|set):
-        if isinstance(data, pd.Series):
+        self.data : dict[str, list[Data]] = {}
+    def __lshift__(self, data: Data|   DataList|list|tuple|set):
+        if isinstance(data, (int, float)):
+            data = Data('number', num=data)
+        elif isinstance(data, str):
+            data = Data('string', str=data, len=len(data))
+        elif isinstance(data, pd.Series):
             data = series_to_data(data, 'None')
-        if isinstance(data, pd.DataFrame):
+        elif isinstance(data, pd.DataFrame):
             data = dataframe_to_data(data)
-        elif isinstance(data, (DataList, list, tuple, set)):
+        if isinstance(data, (DataList, list, tuple, set)):
             for i in data:
                 category = i.category.lower()
                 if self.data.get(category) is None:
@@ -77,8 +49,20 @@ class Hub:
             if e.has_properties(**kwargs):
                 elements.append(e)
         return DataList(elements)
-    def to_dataframe(self):
-        return hub_to_dataframe(self)
+    def to_dataframe(self) -> pd.DataFrame:
+        data = self.data
+        categories = list(data.keys())
+        h = dict[str, dict[tuple[str|int], list]]()
+        for category in categories:
+            for idx, ds in enumerate(data[category]):
+                for k, v in ds.properties.items():
+                    if h.get(k) == None:
+                        h[k] = {(category, idx): v}
+                    else:
+                        h[k].update({(category, idx): v})
+        
+        df = pd.DataFrame(h)
+        return df
     def optimise(self):
         for k, v in self.data.items():
             s = set()

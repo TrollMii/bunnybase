@@ -94,8 +94,8 @@ class BunnyFile:
             if self.init:
                 self.df = df
             else:
-                self.df:pandas.DataFrame = pandas.read_feather(decompressed)
                 decompressed = self.compress.decompress(self.file)
+                self.df:pandas.DataFrame = pandas.read_feather(decompressed)
                 self.df = pandas.concat([df, self.df])
                 self.init = False
     def write(self):

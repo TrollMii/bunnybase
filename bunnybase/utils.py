@@ -1,23 +1,10 @@
+from .datalist import DataList
+from .data import Data
 import pandas as pd
 from PIL import Image
 import numpy as np
 
-from .hub import DataList
-from . import Data, Hub
-def hub_to_dataframe(hub: Hub) -> pd.DataFrame:
-    data = hub.data
-    categories = list(data.keys())
-    h = dict[str, dict[tuple[str|int], list]]()
-    for category in categories:
-        for idx, ds in enumerate(data[category]):
-            for k, v in ds.properties.items():
-                if h.get(k) == None:
-                    h[k] = {(category, idx): v}
-                else:
-                    h[k].update({(category, idx): v})
-    
-    df = pd.DataFrame(h)
-    return df
+
 
 def image_to_data(file, **metadata):
     image = Image.open(file)
